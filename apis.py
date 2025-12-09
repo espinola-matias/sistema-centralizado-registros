@@ -50,3 +50,41 @@ def recibir_logs():
         "logs_procesados": len(logs),
         "hora_recepcion": hora_recepcion
     }), 200
+
+@app.route("/logs", methods =["GET"])
+def verificar_logs():
+    hora_envio = request.args.get("hora_envio")
+    hora_recibida = request.args.get("hora_recibida")
+    service = request.args.get("service")
+    severity = request.args.get("severity")
+
+    query = "SELECT hora_envio, service, severity, message, hora_recibida FROM historial_loggs WHERE 1=1"
+    parametro = []
+
+    if hora_envio:
+        query += " AND hora_envio >= (?)"
+        parametro.append(hora_envio)
+
+    if hora_recibida:
+        query += " AND hora_recibida <= (?)"
+        parametro.append(hora_recibida)
+
+    if service:
+        query += " AND UPPER(service) = UPPER(?)"
+        parametro.append(service)
+
+    if severity:
+        query += " AND UPPER(severity) = UPPER(?)"
+        parametro.append(severity)
+
+    conn = sqlite3.connect("historial_loggs.db")
+    cursor = conn.cursor()
+    cursor.execute(query, parametro)
+    respuesta= cursor.fetchall()
+    conn.close()
+
+    logs = []
+    for fila in respuesta:
+        logs.append({"hora_envio": fila[0], "service": fila[1], "severity": fila[2], "message": fila[3], "hora_recibida": fila[4]})
+    
+    return jsonify(logs), 200
