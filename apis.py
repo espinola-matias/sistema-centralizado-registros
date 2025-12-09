@@ -88,3 +88,6 @@ def verificar_logs():
         logs.append({"hora_envio": fila[0], "service": fila[1], "severity": fila[2], "message": fila[3], "hora_recibida": fila[4]})
     
     return jsonify(logs), 200
+
+if __name__ == "__main__":
+    app.run(debug=True)
