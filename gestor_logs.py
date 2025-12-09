@@ -1,5 +1,5 @@
 import threading
-from alertas import simular_logs as simular_alertas   # comentar y verificar buenas practicas 
+from alertas import simular_logs as simular_alertas   
 from pedidos import simular_logs as simular_pedidos
 from instagram import simular_logs as simular_instagram
 
